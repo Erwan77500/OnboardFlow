@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>OnboardFlow — L'onboarding qui retient vos talents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0A0F1E;
+  --teal:#00E5B4;
+  --teal-dim:#00C49A;
+  --teal-glow:rgba(0,229,180,.18);
+  --white:#F0F4FF;
+  --muted:#8892A8;
+  --card:#111828;
+  --card-border:rgba(255,255,255,.07);
+  --red:#FF4D6D;
+  --amber:#FFB340;
+  --radius:16px;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--ink);color:var(--white);font-family:'Inter',sans-serif;line-height:1.6;overflow-x:hidden}
+::selection{background:var(--teal);color:var(--ink)}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--ink)}
+::-webkit-scrollbar-thumb{background:var(--teal);border-radius:4px}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.1rem 5vw;
+  background:rgba(10,15,30,.85);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--card-border);
+  transition:padding .3s;
+}
+.logo{
+  font-weight:800;font-size:1.25rem;letter-spacing:-.02em;color:var(--white);
+  display:flex;align-items:center;gap:.5rem;text-decoration:none;
+}
+.logo-dot{width:8px;height:8px;border-radius:50%;background:var(--teal);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(1.3)}}
+.nav-links{display:flex;align-items:center;gap:2rem}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:.9rem;font-weight:500;transition:color .2s}
+.nav-links a:hover{color:var(--white)}
+.nav-cta{
+  background:var(--teal);color:var(--ink);
+  padding:.6rem 1.4rem;border-radius:40px;
+  font-weight:700;font-size:.875rem;text-decoration:none;
+  transition:transform .2s,box-shadow .2s;
+  box-shadow:0 0 20px var(--teal-glow);
+}
+.nav-cta:hover{transform:translateY(-2px);box-shadow:0 0 32px rgba(0,229,180,.35)}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:8rem 5vw 4rem;
+  position:relative;overflow:hidden;
+}
+.hero-bg{
+  position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(0,229,180,.12) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 80% 80%, rgba(0,229,180,.06) 0%, transparent 60%);
+}
+.hero-grid{
+  position:absolute;inset:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%, black 0%, transparent 100%);
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:.5rem;
+  border:1px solid rgba(0,229,180,.3);border-radius:40px;
+  padding:.4rem 1rem;font-size:.8rem;font-weight:500;color:var(--teal);
+  margin-bottom:2rem;background:rgba(0,229,180,.05);
+  animation:fadeDown .6s ease both;
+}
+.hero-badge span{width:6px;height:6px;border-radius:50%;background:var(--teal);animation:pulse 1.5s infinite}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
+
+.hero h1{
+  font-size:clamp(2.8rem,7vw,6rem);font-weight:900;letter-spacing:-.04em;
+  line-height:1.05;max-width:900px;
+  animation:fadeUp .7s .1s ease both;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.hero h1 .accent{color:var(--teal)}
+.hero h1 .strike{
+  position:relative;color:var(--muted);
+}
+.hero h1 .strike::after{
+  content:'';position:absolute;left:0;right:0;top:50%;
+  height:2px;background:var(--red);transform:scaleX(0);transform-origin:left;
+  animation:strikeAnim .4s .9s ease forwards;
+}
+@keyframes strikeAnim{to{transform:scaleX(1)}}
+
+.hero-sub{
+  max-width:580px;color:var(--muted);font-size:1.15rem;font-weight:400;
+  margin:1.5rem auto 2.5rem;
+  animation:fadeUp .7s .25s ease both;
+}
+.hero-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;animation:fadeUp .7s .35s ease both}
+.btn-primary{
+  background:var(--teal);color:var(--ink);
+  padding:.875rem 2rem;border-radius:40px;
+  font-weight:700;font-size:1rem;text-decoration:none;
+  box-shadow:0 0 32px var(--teal-glow);
+  transition:transform .2s,box-shadow .2s;display:inline-flex;align-items:center;gap:.5rem;
+}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 0 48px rgba(0,229,180,.4)}
+.btn-secondary{
+  background:transparent;color:var(--white);
+  padding:.875rem 2rem;border-radius:40px;
+  font-weight:600;font-size:1rem;text-decoration:none;
+  border:1px solid var(--card-border);
+  transition:border-color .2s,background .2s;
+  display:inline-flex;align-items:center;gap:.5rem;
+}
+.btn-secondary:hover{border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.04)}
+
+/* ── STATS STRIP ── */
+.stats-strip{
+  display:flex;justify-content:center;flex-wrap:wrap;gap:2px;
+  animation:fadeUp .7s .5s ease both;
+  margin-top:4rem;width:100%;max-width:800px;
+}
+.stat{
+  flex:1;min-width:160px;
+  padding:1.5rem;
+  background:var(--card);border:1px solid var(--card-border);
+  text-align:center;
+}
+.stat:first-child{border-radius:var(--radius) 0 0 var(--radius)}
+.stat:last-child{border-radius:0 var(--radius) var(--radius) 0}
+.stat-num{font-size:2.5rem;font-weight:900;color:var(--teal);letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.stat-label{font-size:.8rem;color:var(--muted);margin-top:.25rem;font-weight:500}
+
+/* ── SCROLL INDICATOR ── */
+.scroll-hint{
+  position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:.5rem;
+  color:var(--muted);font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;
+  animation:fadeUp .7s .8s ease both;
+}
+.scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,transparent,var(--teal));animation:scrollLine 1.5s ease-in-out infinite}
+@keyframes scrollLine{0%,100%{opacity:.3;transform:scaleY(.5)}50%{opacity:1;transform:scaleY(1)}}
+
+/* ── SECTION BASE ── */
+section{padding:7rem 5vw;max-width:1200px;margin:0 auto}
+.section-eyebrow{
+  font-size:.75rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--teal);margin-bottom:1rem;
+}
+.section-title{
+  font-size:clamp(2rem,4vw,3.2rem);font-weight:900;letter-spacing:-.03em;
+  line-height:1.1;margin-bottom:1.5rem;max-width:680px;
+}
+.section-sub{color:var(--muted);font-size:1.1rem;max-width:560px;line-height:1.7}
+
+/* ── PROBLEM SECTION ── */
+.problem-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:1px;
+  background:var(--card-border);border-radius:var(--radius);overflow:hidden;
+  margin-top:4rem;
+}
+.problem-card{
+  background:var(--card);padding:2.5rem;
+  transition:background .25s;
+}
+.problem-card:hover{background:#151d2f}
+.problem-icon{font-size:2rem;margin-bottom:1rem}
+.problem-card h3{font-size:1.1rem;font-weight:700;margin-bottom:.75rem;color:var(--white)}
+.problem-card p{color:var(--muted);font-size:.9rem;line-height:1.7}
+.problem-card.big{grid-column:span 2;
+  background:linear-gradient(135deg,rgba(255,77,109,.08),rgba(255,77,109,.03));
+  border-left:3px solid var(--red);
+}
+.cost-callout{
+  display:inline-flex;align-items:baseline;gap:.5rem;
+  font-size:3.5rem;font-weight:900;color:var(--red);letter-spacing:-.04em;margin-bottom:.5rem;
+}
+.cost-label{font-size:1rem;font-weight:500;color:var(--muted)}
+
+/* ── TIMELINE ── */
+.timeline-section{
+  padding:7rem 5vw;max-width:1200px;margin:0 auto;
+}
+.timeline{
+  position:relative;margin-top:4rem;
+  display:flex;flex-direction:column;gap:0;
+}
+.timeline-track{
+  position:absolute;left:24px;top:0;bottom:0;width:2px;
+  background:rgba(255,255,255,.06);
+  overflow:hidden;
+}
+.timeline-progress{
+  width:100%;background:linear-gradient(to bottom,var(--teal),var(--teal-dim));
+  height:0%;transition:height 1s ease;border-radius:2px;
+}
+.timeline-item{
+  display:flex;gap:2rem;align-items:flex-start;
+  padding:1.75rem 1.75rem 1.75rem 4rem;
+  position:relative;
+  border-radius:var(--radius);
+  transition:background .25s;
+  opacity:0;transform:translateX(-16px);
+  transition:opacity .5s ease,transform .5s ease,background .25s;
+}
+.timeline-item.visible{opacity:1;transform:translateX(0)}
+.timeline-item:hover{background:rgba(255,255,255,.03)}
+.timeline-dot{
+  position:absolute;left:16px;top:1.75rem;
+  width:18px;height:18px;border-radius:50%;
+  border:2px solid var(--card-border);background:var(--card);
+  display:flex;align-items:center;justify-content:center;
+  transition:border-color .3s,background .3s;flex-shrink:0;
+  z-index:1;
+}
+.timeline-item.visible .timeline-dot{border-color:var(--teal);background:rgba(0,229,180,.15)}
+.timeline-day{
+  font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:500;
+  color:var(--teal);min-width:48px;margin-top:.1rem;
+}
+.timeline-content h4{font-size:1.05rem;font-weight:700;margin-bottom:.4rem;color:var(--white)}
+.timeline-content p{font-size:.875rem;color:var(--muted);line-height:1.6}
+.timeline-ai{
+  display:inline-flex;align-items:center;gap:.35rem;
+  font-size:.72rem;font-weight:600;color:var(--teal);
+  background:rgba(0,229,180,.1);border:1px solid rgba(0,229,180,.2);
+  border-radius:20px;padding:.2rem .6rem;margin-top:.5rem;
+}
+
+/* ── FEATURES ── */
+.features-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+  background:var(--card-border);border-radius:var(--radius);overflow:hidden;
+  margin-top:4rem;
+}
+.feature-card{
+  background:var(--card);padding:2rem;
+  transition:background .25s;
+}
+.feature-card:hover{background:#151d2f}
+.feature-icon{
+  width:44px;height:44px;border-radius:12px;
+  background:rgba(0,229,180,.1);border:1px solid rgba(0,229,180,.2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.25rem;margin-bottom:1.25rem;
+}
+.feature-card h3{font-size:1rem;font-weight:700;margin-bottom:.6rem;color:var(--white)}
+.feature-card p{color:var(--muted);font-size:.875rem;line-height:1.6}
+.feature-card .badge{
+  display:inline-block;font-size:.7rem;font-weight:600;
+  background:rgba(0,229,180,.1);color:var(--teal);
+  border-radius:20px;padding:.2rem .6rem;margin-top:.75rem;
+}
+
+/* ── ROI ── */
+.roi-section{
+  padding:7rem 5vw;max-width:1200px;margin:0 auto;
+}
+.roi-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+.roi-visual{
+  background:var(--card);border:1px solid var(--card-border);
+  border-radius:var(--radius);padding:2.5rem;
+  position:relative;overflow:hidden;
+}
+.roi-visual::before{
+  content:'';position:absolute;top:-60px;right:-60px;
+  width:200px;height:200px;border-radius:50%;
+  background:radial-gradient(circle,rgba(0,229,180,.12) 0%,transparent 70%);
+}
+.roi-item{
+  display:flex;align-items:center;gap:1.5rem;
+  padding:1.25rem 0;border-bottom:1px solid var(--card-border);
+}
+.roi-item:last-child{border-bottom:none;padding-bottom:0}
+.roi-num{font-size:2rem;font-weight:900;letter-spacing:-.04em;min-width:80px;font-variant-numeric:tabular-nums}
+.roi-num.green{color:var(--teal)}
+.roi-num.red{color:var(--red)}
+.roi-text h4{font-size:.9rem;font-weight:600;color:var(--white);margin-bottom:.2rem}
+.roi-text p{font-size:.8rem;color:var(--muted)}
+
+/* ── TESTIMONIAL / QUOTE ── */
+.quote-section{
+  padding:5rem 5vw;max-width:1200px;margin:0 auto;
+}
+.quote-card{
+  background:linear-gradient(135deg,rgba(0,229,180,.06),rgba(0,229,180,.02));
+  border:1px solid rgba(0,229,180,.15);border-radius:24px;
+  padding:4rem;text-align:center;position:relative;overflow:hidden;
+}
+.quote-mark{
+  font-size:8rem;line-height:1;color:rgba(0,229,180,.1);font-family:Georgia,serif;
+  position:absolute;top:-1rem;left:2rem;
+}
+.quote-text{
+  font-size:clamp(1.3rem,2.5vw,1.8rem);font-weight:600;
+  line-height:1.5;max-width:780px;margin:0 auto 2rem;
+  color:var(--white);position:relative;z-index:1;
+}
+.quote-source{color:var(--muted);font-size:.9rem;font-weight:500}
+.quote-source strong{color:var(--teal)}
+
+/* ── PRICING ── */
+.pricing-section{
+  padding:7rem 5vw;max-width:1200px;margin:0 auto;
+}
+.pricing-card{
+  background:var(--card);border:1px solid rgba(0,229,180,.25);
+  border-radius:24px;padding:3rem;max-width:480px;margin:4rem auto 0;
+  position:relative;overflow:hidden;
+  box-shadow:0 0 60px rgba(0,229,180,.08);
+}
+.pricing-card::before{
+  content:'';position:absolute;top:-80px;right:-80px;
+  width:240px;height:240px;border-radius:50%;
+  background:radial-gradient(circle,rgba(0,229,180,.1) 0%,transparent 70%);
+}
+.pricing-popular{
+  display:inline-flex;align-items:center;gap:.4rem;
+  background:var(--teal);color:var(--ink);
+  font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:.3rem .8rem;border-radius:20px;margin-bottom:1.5rem;
+}
+.price{font-size:4rem;font-weight:900;letter-spacing:-.05em;color:var(--white)}
+.price span{font-size:1.5rem;color:var(--muted);font-weight:400}
+.price-label{color:var(--muted);font-size:.9rem;margin-bottom:2rem}
+.price-features{list-style:none;display:flex;flex-direction:column;gap:.875rem;margin-bottom:2.5rem}
+.price-features li{display:flex;align-items:flex-start;gap:.75rem;font-size:.9rem;color:var(--muted)}
+.price-features li::before{content:'✓';color:var(--teal);font-weight:700;flex-shrink:0;margin-top:.05rem}
+.price-features li strong{color:var(--white)}
+.price-note{text-align:center;font-size:.8rem;color:var(--muted);margin-top:1.5rem}
+
+/* ── CTA FINAL ── */
+.cta-final{
+  padding:8rem 5vw;max-width:1200px;margin:0 auto;text-align:center;
+  position:relative;
+}
+.cta-glow{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:600px;height:300px;
+  background:radial-gradient(ellipse,rgba(0,229,180,.1) 0%,transparent 70%);
+  pointer-events:none;
+}
+.cta-final h2{
+  font-size:clamp(2.5rem,5vw,4rem);font-weight:900;letter-spacing:-.04em;
+  line-height:1.1;margin-bottom:1.5rem;position:relative;
+}
+.cta-final p{color:var(--muted);font-size:1.1rem;max-width:500px;margin:0 auto 2.5rem;position:relative}
+
+/* ── FOOTER ── */
+footer{
+  padding:3rem 5vw;
+  border-top:1px solid var(--card-border);
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;
+}
+.footer-logo{font-weight:800;font-size:1rem;color:var(--white);text-decoration:none;display:flex;align-items:center;gap:.4rem}
+.footer-links{display:flex;gap:2rem}
+.footer-links a{color:var(--muted);font-size:.85rem;text-decoration:none;transition:color .2s}
+.footer-links a:hover{color:var(--white)}
+.footer-copy{color:var(--muted);font-size:.8rem}
+
+/* ── STACK LOGO STRIP ── */
+.stack-strip{
+  padding:3rem 5vw;max-width:1200px;margin:0 auto;
+  text-align:center;
+}
+.stack-label{font-size:.75rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:1.5rem}
+.stack-logos{
+  display:flex;justify-content:center;align-items:center;gap:1rem;flex-wrap:wrap;
+}
+.stack-chip{
+  display:flex;align-items:center;gap:.5rem;
+  background:var(--card);border:1px solid var(--card-border);
+  border-radius:40px;padding:.5rem 1.2rem;
+  font-size:.8rem;font-weight:600;color:var(--muted);
+  transition:border-color .2s,color .2s;
+}
+.stack-chip:hover{border-color:rgba(0,229,180,.3);color:var(--white)}
+
+/* ── MOBILE ── */
+@media(max-width:768px){
+  .problem-grid{grid-template-columns:1fr}
+  .problem-card.big{grid-column:span 1}
+  .features-grid{grid-template-columns:1fr}
+  .roi-grid{grid-template-columns:1fr}
+  .nav-links{display:none}
+  .stats-strip{flex-direction:column;gap:1px}
+  .stat:first-child{border-radius:var(--radius) var(--radius) 0 0}
+  .stat:last-child{border-radius:0 0 var(--radius) var(--radius)}
+}
+
+/* ── REVEAL ANIMATION ── */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">
+    <span class="logo-dot"></span>
+    OnboardFlow
+  </a>
+  <div class="nav-links">
+    <a href="#comment">Comment ça marche</a>
+    <a href="#roi">ROI</a>
+    <a href="#prix">Tarifs</a>
+  </div>
+  <a href="https://my-onboard-flow.base44.app/register" class="nav-cta">Essayer gratuitement →</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+
+  <div class="hero-badge">
+    <span></span>
+    Propulsé par Claude AI (Anthropic) · Stack 100% no-code
+  </div>
+
+  <h1>
+    Votre prochain salarié<br>
+    ne partira pas dans<br>
+    <span class="strike">45 jours</span> <span class="accent">cette fois.</span>
+  </h1>
+
+  <p class="hero-sub">
+    OnboardFlow automatise l'intégralité du parcours d'accueil — de J-7 à J+30 — avec de l'IA générative. Sans DRH. Sans coder. Sans effort.
+  </p>
+
+  <div class="hero-actions">
+    <a href="https://my-onboard-flow.base44.app/register" class="btn-primary">
+      🚀 Démarrer en 5 minutes
+    </a>
+    <a href="https://my-onboard-flow.base44.app" class="btn-secondary">
+      Voir la démo →
+    </a>
+  </div>
+
+  <div class="stats-strip">
+    <div class="stat">
+      <div class="stat-num">20%</div>
+      <div class="stat-label">des recrues partent avant 45 jours</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">6 k€</div>
+      <div class="stat-label">coût moyen d'un départ précoce</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">5 h</div>
+      <div class="stat-label">perdues chaque semaine en manuel</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">59 €</div>
+      <div class="stat-label">par mois, tout compris</div>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <span>Découvrir</span>
+    <div class="scroll-line"></div>
+  </div>
+</div>
+
+<!-- STACK STRIP -->
+<div class="stack-strip reveal">
+  <div class="stack-label">Intégrations natives</div>
+  <div class="stack-logos">
+    <div class="stack-chip">🤖 Claude AI</div>
+    <div class="stack-chip">📧 Brevo</div>
+    <div class="stack-chip">⚙️ Make.com</div>
+    <div class="stack-chip">✍️ DocuSeal</div>
+    <div class="stack-chip">🗄️ Airtable</div>
+    <div class="stack-chip">🔒 RGPD EU</div>
+  </div>
+</div>
+
+<!-- PROBLEM -->
+<section id="probleme">
+  <div class="reveal">
+    <div class="section-eyebrow">Le problème réel</div>
+    <h2 class="section-title">L'onboarding manuel coûte plus cher que vous ne pensez.</h2>
+    <p class="section-sub">Dans les PME sans DRH dédié, chaque nouvelle arrivée est une improvisation. Les mêmes erreurs. Les mêmes coûts cachés.</p>
+  </div>
+
+  <div class="problem-grid reveal">
+    <div class="problem-card big">
+      <div class="cost-callout">6 000 €</div>
+      <div class="cost-label">coût moyen pour remplacer un salarié qui part avant 3 mois</div>
+      <p style="color:var(--muted);font-size:.9rem;margin-top:.75rem">Recrutement + formation + perte de productivité + moral de l'équipe. Et vous le payez tous les ans.</p>
+    </div>
+    <div class="problem-card">
+      <div class="problem-icon">📧</div>
+      <h3>Emails éparpillés</h3>
+      <p>Le contrat part par email, le badge par SMS, la mutuelle est oubliée. Le nouveau salarié ne sait pas ce qu'il doit faire.</p>
+    </div>
+    <div class="problem-card">
+      <div class="problem-icon">⏰</div>
+      <h3>5h perdues chaque semaine</h3>
+      <p>Votre office manager relance, recopie, rappelle. Des heures à valeur nulle qui coûtent et épuisent.</p>
+    </div>
+    <div class="problem-card">
+      <div class="problem-icon">🙈</div>
+      <h3>Aucune visibilité</h3>
+      <p>Vous découvrez les problèmes quand c'est trop tard — quand le salarié vous annonce qu'il repart.</p>
+    </div>
+    <div class="problem-card">
+      <div class="problem-icon">🔧</div>
+      <h3>Les SIRH : trop chers, trop lourds</h3>
+      <p>Workelo, HeyTeam : 150-500€/mois, 3 mois de déploiement. Pensés pour les grands groupes, pas pour vous.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<div class="timeline-section" id="comment">
+  <div class="reveal">
+    <div class="section-eyebrow">Comment ça marche</div>
+    <h2 class="section-title">De J-7 à J+30, tout roule. Automatiquement.</h2>
+    <p class="section-sub">Créez un onboarding en 2 minutes. L'IA s'occupe du reste — emails, checklist, signature, suivi.</p>
+  </div>
+
+  <div class="timeline" id="timeline">
+    <div class="timeline-track">
+      <div class="timeline-progress" id="timeline-progress"></div>
+    </div>
+
+    <div class="timeline-item" style="transition-delay:.05s">
+      <div class="timeline-dot"></div>
+      <div class="timeline-day">J-7</div>
+      <div class="timeline-content">
+        <h4>Email de bienvenue personnalisé par IA</h4>
+        <p>Claude génère un email unique pour chaque salarié — adapté à son poste, son secteur, son manager. Ni générique, ni copié-collé.</p>
+        <span class="timeline-ai">✨ Généré par Claude AI</span>
+      </div>
+    </div>
+
+    <div class="timeline-item" style="transition-delay:.15s">
+      <div class="timeline-dot"></div>
+      <div class="timeline-day">J-1</div>
+      <div class="timeline-content">
+        <h4>Rappel automatique + signature du contrat</h4>
+        <p>Le salarié reçoit sa checklist d'arrivée et signe son contrat en ligne (DocuSeal). Rien à imprimer, rien à scanner.</p>
+      </div>
+    </div>
+
+    <div class="timeline-item" style="transition-delay:.25s">
+      <div class="timeline-dot"></div>
+      <div class="timeline-day">J0</div>
+      <div class="timeline-content">
+        <h4>Espace salarié activé</h4>
+        <p>Votre nouveau collaborateur accède à son espace : documents RH, contacts, badges et accès à demander. Il se sent attendu.</p>
+      </div>
+    </div>
+
+    <div class="timeline-item" style="transition-delay:.35s">
+      <div class="timeline-dot"></div>
+      <div class="timeline-day">J+7</div>
+      <div class="timeline-content">
+        <h4>Questionnaire d'intégration automatique</h4>
+        <p>Un suivi court, envoyé automatiquement. Vous savez si tout se passe bien avant que le salarié n'en parle à ses amis.</p>
+      </div>
+    </div>
+
+    <div class="timeline-item" style="transition-delay:.45s">
+      <div class="timeline-dot"></div>
+      <div class="timeline-day">J+30</div>
+      <div class="timeline-content">
+        <h4>Analyse NPS et score de risque de départ</h4>
+        <p>L'IA analyse les retours du salarié et génère un score de risque : 🟢 Faible / 🟠 Moyen / 🔴 Élevé. Agissez avant qu'il ne soit trop tard.</p>
+        <span class="timeline-ai">✨ Analyse prédictive par Claude AI</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section>
+  <div class="reveal">
+    <div class="section-eyebrow">Fonctionnalités</div>
+    <h2 class="section-title">Tout ce dont vous avez besoin. Rien de plus.</h2>
+  </div>
+
+  <div class="features-grid reveal">
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <h3>Dashboard temps réel</h3>
+      <p>Statut de chaque onboarding en vert, orange ou rouge. Vous voyez en 10 secondes ce qui nécessite votre attention.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🤖</div>
+      <h3>Emails IA hyper-personnalisés</h3>
+      <p>Chaque email est généré par Claude selon le profil du salarié. Résultat : un taux d'ouverture 3× supérieur à un template.</p>
+      <span class="badge">✨ Claude AI</span>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📋</div>
+      <h3>Templates prêts à l'emploi</h3>
+      <p>CDI cadre, CDD technicien, freelance. Configuré en 1h. Personnalisable à l'infini.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">✍️</div>
+      <h3>Signature électronique</h3>
+      <p>Contrat signé avant le premier jour. Légal, sécurisé, sans papier. Zéro friction.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📈</div>
+      <h3>Score de rétention IA</h3>
+      <p>À J+30, l'IA prédit si votre salarié risque de partir. Vous pouvez agir avant qu'il le décide.</p>
+      <span class="badge">✨ Claude AI</span>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔒</div>
+      <h3>100% conforme RGPD</h3>
+      <p>Hébergé en Europe. Données en France (Brevo). Aucune donnée partagée hors UE.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ROI -->
+<div class="roi-section" id="roi">
+  <div class="roi-grid reveal">
+    <div>
+      <div class="section-eyebrow">Retour sur investissement</div>
+      <h2 class="section-title">Un seul départ évité rembourse 8 ans d'abonnement.</h2>
+      <p class="section-sub" style="margin-bottom:2rem">Les chiffres sont brutaux. Le calcul est simple. OnboardFlow se rentabilise dès le premier mois.</p>
+      <a href="https://my-onboard-flow.base44.app/register" class="btn-primary">Calculer mon ROI →</a>
+    </div>
+    <div class="roi-visual">
+      <div class="roi-item">
+        <div class="roi-num red">6 k€</div>
+        <div class="roi-text">
+          <h4>Coût d'un départ précoce</h4>
+          <p>Recrutement + formation + productivité perdue</p>
+        </div>
+      </div>
+      <div class="roi-item">
+        <div class="roi-num" style="color:var(--amber)">5 h</div>
+        <div class="roi-text">
+          <h4>Gagnées par semaine</h4>
+          <p>Automatisation complète de l'onboarding manuel</p>
+        </div>
+      </div>
+      <div class="roi-item">
+        <div class="roi-num green">97%</div>
+        <div class="roi-text">
+          <h4>Marge brute à 20 clients</h4>
+          <p>Stack 0€ jusqu'à 50 clients actifs</p>
+        </div>
+      </div>
+      <div class="roi-item">
+        <div class="roi-num green">1 h</div>
+        <div class="roi-text">
+          <h4>Pour être opérationnel</h4>
+          <p>Configuration sans technique, sans formation</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- QUOTE -->
+<div class="quote-section reveal">
+  <div class="quote-card">
+    <div class="quote-mark">"</div>
+    <p class="quote-text">
+      Quand un salarié part au bout de 6 semaines parce qu'on l'a mal accueilli, c'est 3 mois de recrutement à la poubelle. OnboardFlow m'a évité ça deux fois cette année.
+    </p>
+    <div class="quote-source">Marc F. — <strong>CEO, agence conseil 18 personnes, Paris</strong></div>
+  </div>
+</div>
+
+<!-- PRICING -->
+<div class="pricing-section" id="prix">
+  <div class="reveal" style="text-align:center">
+    <div class="section-eyebrow">Tarifs</div>
+    <h2 class="section-title" style="margin:0 auto">Simple. Honnête. Prévisible.</h2>
+    <p class="section-sub" style="margin:.75rem auto 0">Un forfait fixe. Pas de surprise. Pas de per-user.</p>
+  </div>
+
+  <div class="pricing-card reveal">
+    <div class="pricing-popular">⚡ Offre de lancement</div>
+    <div class="price">59 €<span>/mois</span></div>
+    <div class="price-label">Forfait fixe — quel que soit le nombre de salariés onboardés</div>
+    <ul class="price-features">
+      <li><strong>Onboardings illimités</strong></li>
+      <li><strong>Emails IA personnalisés</strong> par Claude (Anthropic)</li>
+      <li><strong>Score risque de départ</strong> à J+30</li>
+      <li><strong>Signature électronique</strong> intégrée</li>
+      <li><strong>Dashboard + analytics</strong> temps réel</li>
+      <li><strong>Templates</strong> CDI / CDD / Freelance</li>
+      <li><strong>Support</strong> par email sous 24h</li>
+      <li><strong>RGPD</strong> — hébergement EU</li>
+    </ul>
+    <a href="https://my-onboard-flow.base44.app/register" class="btn-primary" style="width:100%;justify-content:center;font-size:1.05rem">
+      Démarrer gratuitement →
+    </a>
+    <p class="price-note">Pas de carte bancaire requise · Annulable à tout moment</p>
+  </div>
+</div>
+
+<!-- CTA FINAL -->
+<div class="cta-final">
+  <div class="cta-glow"></div>
+  <h2 class="reveal">Votre prochain salarié<br>mérite mieux qu'un email oublié.</h2>
+  <p class="reveal">Configurez OnboardFlow en 1 heure. Vos prochaines arrivées seront mémorables.</p>
+  <div class="reveal">
+    <a href="https://my-onboard-flow.base44.app/register" class="btn-primary" style="font-size:1.1rem;padding:1rem 2.5rem">
+      🚀 Commencer maintenant — c'est gratuit
+    </a>
+  </div>
+  <p class="reveal" style="color:var(--muted);font-size:.85rem;margin-top:1.5rem">
+    Déjà utilisé par des PME françaises · 59€/mois · Résiliable à tout moment
+  </p>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <a href="#" class="footer-logo">
+    <span style="width:8px;height:8px;border-radius:50%;background:var(--teal);display:inline-block"></span>
+    OnboardFlow
+  </a>
+  <div class="footer-links">
+    <a href="https://my-onboard-flow.base44.app">Application</a>
+    <a href="https://my-onboard-flow.base44.app/register">S'inscrire</a>
+    <a href="mailto:erwannkongo@gmail.com">Contact</a>
+  </div>
+  <div class="footer-copy">© 2026 OnboardFlow · Stack 100% no-code · Hébergé en EU</div>
+</footer>
+
+<script>
+// ── INTERSECTION OBSERVER pour les reveals et timeline ──
+const reveals = document.querySelectorAll('.reveal');
+const timelineItems = document.querySelectorAll('.timeline-item');
+const timelineProgress = document.getElementById('timeline-progress');
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.12 });
+
+reveals.forEach(el => observer.observe(el));
+
+// Timeline items
+const tlObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.3 });
+
+timelineItems.forEach(el => tlObserver.observe(el));
+
+// Timeline progress bar based on scroll
+const tl = document.getElementById('timeline');
+if (tl) {
+  window.addEventListener('scroll', () => {
+    const rect = tl.getBoundingClientRect();
+    const windowH = window.innerHeight;
+    const pct = Math.min(100, Math.max(0,
+      ((windowH - rect.top) / (rect.height + windowH)) * 160
+    ));
+    timelineProgress.style.height = pct + '%';
+  });
+}
+
+// ── Counters animation ──
+function animateCount(el, target, suffix='') {
+  const dur = 1800;
+  const start = performance.now();
+  const isDecimal = String(target).includes('.');
+  const update = (now) => {
+    const p = Math.min((now - start) / dur, 1);
+    const ease = 1 - Math.pow(1 - p, 3);
+    const val = target * ease;
+    el.textContent = (isDecimal ? val.toFixed(1) : Math.round(val)) + suffix;
+    if (p < 1) requestAnimationFrame(update);
+  };
+  requestAnimationFrame(update);
+}
+
+const statNums = document.querySelectorAll('.stat-num');
+const statsObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const text = e.target.textContent;
+      if (text.includes('20%')) animateCount(e.target, 20, '%');
+      else if (text.includes('6')) animateCount(e.target, 6, ' k€');
+      else if (text.includes('5')) animateCount(e.target, 5, ' h');
+      else if (text.includes('59')) animateCount(e.target, 59, ' €');
+      statsObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.5 });
+statNums.forEach(el => statsObs.observe(el));
+
+// ── Nav shrink on scroll ──
+window.addEventListener('scroll', () => {
+  document.querySelector('nav').style.padding =
+    window.scrollY > 60 ? '.75rem 5vw' : '1.1rem 5vw';
+});
+
+// ── Parallax subtle on hero grid ──
+document.addEventListener('mousemove', (e) => {
+  const x = (e.clientX / window.innerWidth - .5) * 20;
+  const y = (e.clientY / window.innerHeight - .5) * 20;
+  const grid = document.querySelector('.hero-grid');
+  if (grid) grid.style.transform = `translate(${x*.3}px,${y*.3}px)`;
+});
+</script>
+</body>
+</html>
